@@ -1,0 +1,111 @@
+﻿<Window x:Class="AutoPilotAgent.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:AutoPilotAgent.UI.Converters"
+        xmlns:local="clr-namespace:AutoPilotAgent.UI"
+        mc:Ignorable="d"
+        Title="AutoPilot Agent" Height="720" Width="1100">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="What do you want to do?" FontWeight="SemiBold" />
+                <TextBox Margin="0,6,0,0" Height="70" TextWrapping="Wrap" AcceptsReturn="True"
+                         Text="{Binding GoalText, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom">
+                <TextBlock Text="Status:" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding StatusText}" Margin="0,4,0,8" />
+
+                <Button Height="32" Margin="0,0,0,8" Content="Generate Plan" Command="{Binding GeneratePlanCommand}" IsEnabled="{Binding IsBusy, Converter={x:Static converters:BooleanNegationConverter.Instance}}" />
+
+                <Button Height="32" Margin="0,0,0,8" Command="{Binding ToggleArmCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="Arm" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsArmed}" Value="True">
+                                    <Setter Property="Content" Value="Disarm" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Height="32" Margin="0,0,0,8" Content="Run Plan" Command="{Binding RunPlanCommand}" />
+                <Button Height="32" Background="#FFE9B3B3" Content="Stop (Kill Switch)" Command="{Binding StopCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1" Margin="0,12,0,12" BorderThickness="1" BorderBrush="#FFDDDDDD" Padding="10">
+            <DockPanel>
+                <CheckBox DockPanel.Dock="Right" Margin="12,0,0,0" VerticalAlignment="Center" Content="Auto-approve" IsChecked="{Binding AutoApprove}" />
+                <TextBlock DockPanel.Dock="Left" Text="OpenAI API Key (stored via Windows DPAPI):" VerticalAlignment="Center" />
+                <TextBox DockPanel.Dock="Left" Width="420" Margin="10,0,10,0" Text="{Binding ApiKeyText, UpdateSourceTrigger=PropertyChanged}" />
+                <Button DockPanel.Dock="Right" Width="120" Content="Save Key" Command="{Binding SaveApiKeyCommand}" />
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Grid.Column="0" Header="Structured Plan" Margin="0,0,6,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,8">
+                        <TextBlock Text="Required Apps:" FontWeight="SemiBold" />
+                        <ItemsControl ItemsSource="{Binding RequiredApps}" />
+                        <TextBlock Margin="0,8,0,0" Text="Clarifying Questions:" FontWeight="SemiBold" />
+                        <ItemsControl ItemsSource="{Binding ClarifyingQuestions}" />
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Steps}" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Id}" Width="50" />
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" />
+                            <DataGridTextColumn Header="Risk" Binding="{Binding RiskLevel}" Width="90" />
+                            <DataGridCheckBoxColumn Header="Confirm" Binding="{Binding RequiresConfirmation}" Width="80" />
+                            <DataGridTextColumn Header="Validation" Binding="{Binding Validation}" Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Column="1" Header="Live Execution Log" Margin="6,0,0,0">
+                <ListBox ItemsSource="{Binding Logs}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="{Binding TimestampUtc}" />
+                                <Run Text="  " />
+                                <Run Text="{Binding Level}" />
+                                <Run Text=": " />
+                                <Run Text="{Binding Message}" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>

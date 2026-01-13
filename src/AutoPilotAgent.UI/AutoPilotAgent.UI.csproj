@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    
+    <!-- Installer/Publish settings -->
+    <AssemblyName>AutoPilotAgent</AssemblyName>
+    <Product>AutoPilot Agent</Product>
+    <Version>1.0.0</Version>
+    <Company>AutoPilot</Company>
+    <Description>AI-powered desktop automation agent</Description>
+    
+    <!-- Self-contained publish -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutoPilotAgent.Automation\AutoPilotAgent.Automation.csproj" />
+    <ProjectReference Include="..\AutoPilotAgent.Core\AutoPilotAgent.Core.csproj" />
+    <ProjectReference Include="..\AutoPilotAgent.Logging\AutoPilotAgent.Logging.csproj" />
+    <ProjectReference Include="..\AutoPilotAgent.OpenAI\AutoPilotAgent.OpenAI.csproj" />
+    <ProjectReference Include="..\AutoPilotAgent.Policy\AutoPilotAgent.Policy.csproj" />
+    <ProjectReference Include="..\AutoPilotAgent.Storage\AutoPilotAgent.Storage.csproj" />
+  </ItemGroup>
+
+</Project>
